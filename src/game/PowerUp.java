@@ -17,7 +17,7 @@ public class PowerUp extends Element {
 	@Override
 	public void paint(Graphics brush) {
 		brush.setColor(Color.BLUE);
-		brush.fillOval((int)position.x, (int)position.y, 10, 10);
+		brush.fillOval((int)position.x, (int)position.y, 20, 20);
 		super.paint(brush);
 	}
 	
@@ -27,6 +27,18 @@ public class PowerUp extends Element {
 		
 	}
 	
+    @Override
+    public boolean collide(Polygon p) {
+        if (p instanceof Ship) {
+            Ship ship = (Ship) p;
+            ship.collectPower(this);
+            System.out.println("Power-up collected!");
+            return true;
+        }
+        return super.collide(p);
+    }
+    
+    
 	 class PowerUpEff{
 		private long time;
 		private boolean active;
@@ -39,6 +51,7 @@ public class PowerUp extends Element {
 			if(!active) {
 				time = System.currentTimeMillis();
 				active = true;
+				System.out.println("Shield Power-Up activated!");
 			}
 		}
 		
@@ -46,6 +59,7 @@ public class PowerUp extends Element {
 			if(active && (System.currentTimeMillis() - time) >  7000) {
 				active = false;
 			}
+			System.out.println("Shield Expired");
 		}
 		
 		public boolean isActive() {
