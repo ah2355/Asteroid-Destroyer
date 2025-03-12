@@ -1,1 +1,56 @@
+package game;
 
+import java.awt.Color;
+import java.awt.Graphics;
+
+public class PowerUp extends Element {
+	private String power;
+	protected PowerUpEff powerE;
+	
+	public PowerUp(Point inPosition) {
+		super(new Point [] { new Point(0,0),new Point(20,0),
+				new Point(0,20),new Point(20,20), }, inPosition, 0);
+		power = "Shield";
+		powerE = new PowerUpEff();
+	}
+	
+	@Override
+	public void paint(Graphics brush) {
+		brush.setColor(Color.BLUE);
+		brush.fillOval((int)position.x, (int)position.y, 10, 10);
+		super.paint(brush);
+	}
+	
+	public void activateShield(Ship sh) {
+		sh.activeShield();
+		powerE.start();
+		
+	}
+	
+	 class PowerUpEff{
+		private long time;
+		private boolean active;
+		
+		public PowerUpEff() {
+			active = false;
+		}
+		
+		public void start() {
+			if(!active) {
+				time = System.currentTimeMillis();
+				active = true;
+			}
+		}
+		
+		public void check() {
+			if(active && (System.currentTimeMillis() - time) >  7000) {
+				active = false;
+			}
+		}
+		
+		public boolean isActive() {
+			return active;
+		}
+	}
+
+}
