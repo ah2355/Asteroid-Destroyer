@@ -16,6 +16,7 @@ class AsteroidDestroyer extends Game {
 	static int counter = 0;
 	private Ship element;
 	private ArrayList<Asteroid> ast;
+	private ArrayList<Star> stars;
 	private PowerUp[] power;
 
 	public AsteroidDestroyer() {
@@ -23,6 +24,7 @@ class AsteroidDestroyer extends Game {
 		this.setFocusable(true);
 		this.requestFocus();
 		ast = new ArrayList<Asteroid>();
+		stars = new ArrayList<Star>();
 		power = new PowerUp[5];
 
 		Point[] p = { new Point(0, 0), new Point(20, 0), 
@@ -30,6 +32,23 @@ class AsteroidDestroyer extends Game {
 
 		element = new Ship(p, new Point(400, 300), 0);
 
+
+		this.addKeyListener(element);
+		
+		spawAsteroids();
+		spawnPower();
+		spawnStars();
+	}
+
+	public void spawnPower() {
+		for (int i = 0; i < power.length; i++) {
+			Point randomPosition = new Point((int) (Math.random() * 800),
+					(int) (Math.random() * 600));
+			power[i] = new PowerUp(randomPosition);
+		}
+	}
+	
+	public void spawAsteroids() {
 		Point[] astr = { new Point(0, 0), new Point(20, -10),
 				new Point(40, 0), new Point(30, 20), new Point(10, 20) };
 
@@ -40,27 +59,30 @@ class AsteroidDestroyer extends Game {
 
 			ast.add(new Asteroid(astr, new Point(x, y), rotation));
 		}
-
-		this.addKeyListener(element);
-
-		spawnPower();
 	}
-
-	public void spawnPower() {
-		for (int i = 0; i < power.length; i++) {
-			Point randomPosition = new Point((int) (Math.random() * 800),
-					(int) (Math.random() * 600));
-			power[i] = new PowerUp(randomPosition);
+	
+	public void spawnStars() {
+		for(int i =0 ; i < 100; i++) {
+			stars.add(new Star(800, 600));
 		}
 	}
 
 	public void paint(Graphics brush) {
 		brush.setColor(Color.black);
 		brush.fillRect(0, 0, width, height);
+		
+		Font font = new Font("San-serif", Font.BOLD, 24);
+		brush.setFont(font);
+		brush.setColor(Color.MAGENTA);
+		brush.drawString("Asteroid Destroyer", 250, 100);
 
+		for(Star star: stars) {
+			star.paint(brush);
+		}
+		
 		if (element != null) {
 			element.move();
-			element.paint(brush);
+			elementa.paint(brush);
 
 			for (PowerUp pw : power) {
 				if(pw!= null) {
