@@ -13,50 +13,59 @@ import java.util.ArrayList;
 
 class AsteroidDestroyer extends Game {
 	static int counter = 0;
-	private Element element;
-	private ArrayList<Element> sh;
-	
+	private Ship element;
+	private ArrayList<Asteroid> ast;
+
 	public AsteroidDestroyer() {
 		super("AsteroidDestroyer!", 800, 600);
 		this.setFocusable(true);
 		this.requestFocus();
-		sh = new ArrayList<Element>();
+		ast = new ArrayList<Asteroid>();
 
-		Point[] p = { new Point(0, 0), new Point(20, 0), 
-				new Point(20, 20) };
+		Point[] p = { new Point(0, 0), new Point(20, 0), new Point(20, 20) };
+
+		element = new Ship(p, new Point(400, 300), 0);
+
+		Point[] astr = { new Point(0, 0), new Point(20, -10), 
+				new Point(40, 0), new Point(30, 20), new Point(10, 20) };
 		
-		element = new Element(p, new Point(400, 300), 0);
-		sh.add(element);
-		
+		for(int i =0; i < 4; i++) {
+			int x = (int)(Math.random()* 800);
+			int y = (int)(Math.random()*600);
+			double rotation = Math.random() * 360;
+			
+			ast.add(new Asteroid(astr, new Point(x,y), rotation));
+		}
+
 		this.addKeyListener(element);
 	}
 
 	public void paint(Graphics brush) {
 		brush.setColor(Color.black);
 		brush.fillRect(0, 0, width, height);
-		
 
-		if(sh!= null) {
-			for(Element sh1: sh) {
-				sh1.move();
+		if (element != null) {
+			element.move();
+			element.paint(brush);
+
+			for (Asteroid at : ast) {
+				at.move();
+				at.paint(brush);
 				
-				for(Element sh2 : sh) {
-					if(sh1 != sh2 && sh1.collide(sh2)) {
-						System.out.println("System collides");
-					}
+				if (element.collide(at)) {
+					System.out.println("System collides");
 				}
-				sh1.paint(brush);
 			}
+			
 		}
-		
+
 		// sample code for printing message for debugging
 		// counter is incremented and this message printed
 		// each time the canvas is repainted
 		counter++;
 		brush.setColor(Color.white);
 		brush.drawString("Counter is " + counter, 10, 10);
-		
-		
+
 	}
 
 	public static void main(String[] args) {
