@@ -2,6 +2,9 @@ package game;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import javax.swing.Timer;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 public class PowerUp extends Element {
 	private String power;
@@ -40,6 +43,7 @@ public class PowerUp extends Element {
 	 class PowerUpEff{
 		private long time;
 		private boolean active;
+		private Timer timer;
 		
 		public PowerUpEff() {
 			active = false;
@@ -51,15 +55,20 @@ public class PowerUp extends Element {
 				active = true;
 				System.out.println("Shield Power-Up activated!");
 			}
-		}
-		
-		public void check() {
-			if(active && (System.currentTimeMillis() - time) >  5000) {
-				active = false;
-				System.out.println("Shield Expired");
-			}
+			timer = new Timer(5000, new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					if(active && (System.currentTimeMillis() - time) >  5000) {
+						active = false;
+						System.out.println("Shield Expired");
+						timer.stop();
+					}
+				}
+			
+			});
+			timer.start();
 			
 		}
+		
 		
 		public boolean isActive() {
 			return active;
