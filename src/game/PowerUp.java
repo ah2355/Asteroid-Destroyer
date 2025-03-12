@@ -14,11 +14,9 @@ public class PowerUp extends Element {
 		powerE = new PowerUpEff();
 	}
 	
-	@Override
 	public void paint(Graphics brush) {
 		brush.setColor(Color.BLUE);
 		brush.fillOval((int)position.x, (int)position.y, 20, 20);
-		super.paint(brush);
 	}
 	
 	public void activateShield(Ship sh) {
@@ -56,10 +54,11 @@ public class PowerUp extends Element {
 		}
 		
 		public void check() {
-			if(active && (System.currentTimeMillis() - time) >  7000) {
+			if(active && (System.currentTimeMillis() - time) >  5000) {
 				active = false;
+				System.out.println("Shield Expired");
 			}
-			System.out.println("Shield Expired");
+			
 		}
 		
 		public boolean isActive() {
