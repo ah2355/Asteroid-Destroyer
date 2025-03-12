@@ -68,6 +68,19 @@ class AsteroidDestroyer extends Game {
 
 	}
 
+	private void checkCollisions(){
+		ArrayList<Beam> beams = element.beams;
+		beams.removeIf( beam -> {
+			for(Asteroid at : ast){
+				if(at.contains(beam.getPosition()){
+					ast.remove(at);
+					return true;
+				}
+			}
+			return false;
+		});
+	}
+	
 	public static void main(String[] args) {
 		AsteroidDestroyer a = new AsteroidDestroyer();
 		a.repaint();
