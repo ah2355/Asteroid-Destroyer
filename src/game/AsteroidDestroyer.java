@@ -119,10 +119,11 @@ class AsteroidDestroyer extends Game {
 		// sample code for printing message for debugging
 		// counter is incremented and this message printed
 		// each time the canvas is repainted
-		counter++;
+		Font counterFont = new Font("San-serif", Font.BOLD, 10);
+		brush.setFont(counterFont);
 		brush.setColor(Color.white);
+		counter++;
 		brush.drawString("Counter is " + counter, 10, 10);
-
 	}
 
 	private void checkCollisions() {
