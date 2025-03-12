@@ -35,7 +35,7 @@ public class Ship extends Element implements Move {
 		}
 
 		for(Beams beam : beams){
-			beam.pain(brush);
+			beam.paint(brush);
 		}
 	}
 	
