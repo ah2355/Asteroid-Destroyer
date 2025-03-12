@@ -1,156 +1,105 @@
 package game;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.event.KeyEvent;
+/*
+CLASS: YourGameNameoids
+DESCRIPTION: Extending Game, YourGameName is all in the paint method.
+NOTE: This class is the metaphorical "main method" of your program,
+      it is your control center.
 
-public class Ship extends Element implements Move {
-	private boolean forward = false;
-	private boolean left = false;
-	private boolean right = false;
-	private boolean backward = false;
-	private boolean shield = false;
-	private PowerUp power;
-	private boolean shooting;
-	private ArrayList<Beam> beams;
+*/
+import java.awt.*;
+import java.awt.event.*;
+import java.util.ArrayList;
 
-	public Ship(Point[] inShape, Point inPosition, double inRotation) {
-		super(inShape, inPosition, inRotation);
-		beams = new ArrayList<>();
+class AsteroidDestroyer extends Game {
+	static int counter = 0;
+	private Ship element;
+	private ArrayList<Asteroid> ast;
+	private PowerUp [] power;
+
+	public AsteroidDestroyer() {
+		super("AsteroidDestroyer!", 800, 600);
+		this.setFocusable(true);
+		this.requestFocus();
+		ast = new ArrayList<Asteroid>();
+		power = new PowerUp[5];
+
+		Point[] p = { new Point(0, 0), new Point(20, 0), new Point(20, 20) };
+
+		element = new Ship(p, new Point(400, 300), 0);
+
+		Point[] astr = { new Point(0, 0), new Point(20, -10), 
+				new Point(40, 0), new Point(30, 20), new Point(10, 20) };
+		
+		for(int i =0; i < 4; i++) {
+			int x = (int)(Math.random()* 800);
+			int y = (int)(Math.random()*600);
+			double rotation = Math.random() * 360;
+			
+			ast.add(new Asteroid(astr, new Point(x,y), rotation));
+		}
+
+		this.addKeyListener(element);
+		
+		spawnPower();
+	}
+	
+	public void spawnPower() {
+        for (int i = 0; i < power.length; i++) {
+            Point randomPosition = new Point((int) (Math.random() * 800),
+            		(int) (Math.random() * 600)); 
+            power[i] = new PowerUp(randomPosition);
+        }
 	}
 
 	public void paint(Graphics brush) {
-		if (shield) {
-			brush.setColor(Color.CYAN);
-		} else {
-			brush.setColor(Color.RED);
-		}
-		super.paint(brush);
-		
-		if(power != null) {
-			power.powerE.check();
-		}
-		if(!power.powerE.isActive()) {
-			deactiveShield();
-			power = null;
-		}
+		brush.setColor(Color.black);
+		brush.fillRect(0, 0, width, height);
 
-		for(Beam beam : beams){
-			beam.paint(brush);
-		}
-	}
-	
-	public void collectPower(PowerUp pw) {
-		power = pw;
-		power.activateShield(this);
-	}
-
-	public void activeShield() {
-		if (!shield) {
-			shield = true;
-		}
-	}
-
-	public void deactiveShield() {
-		if (shield) {
-			shield = false;
-		}
-	}
-
-	public void move() {
-		double stepSize = 2.0;
-
-		if (forward) {
-			double x = stepSize * Math.cos(Math.toRadians(rotation));
-			double y = stepSize * Math.sin(Math.toRadians(rotation));
-
-			position.x += x;
-			position.y += y;
-		}
-
-		if (backward) {
-			double x = stepSize * Math.cos(Math.toRadians(rotation));
-			double y = stepSize * Math.sin(Math.toRadians(rotation));
-
-			position.x -= x;
-			position.y -= y;
-		}
-
-		if (left) {
-			rotation -= 5;
-			if (rotation < 0) {
-				rotation += 360;
+		if (element != null) {
+			element.move();
+			element.paint(brush);
+			
+			
+			for(PowerUp pw: power) {
+				pw.paint(brush);
 			}
-		}
-
-		if (right) {
-			rotation += 5;
-			if (rotation >= 360) {
-				rotation -= 360;
+			
+			for(PowerUp pw: power) {
+				if(element.collide(pw)) {
+					System.out.println("Power-up collected");
+					pw.activateShield(element);
+					element.collectPower(pw);
+				}
 			}
+
+			for (Asteroid at : ast) {
+				at.move();
+				at.paint(brush);
+				
+				if (element.collide(at)) {
+					System.out.println("System collides");
+					if(element.statShield()) {
+						System.out.println("Shield blocked the collision with asteroid!");
+					}else {
+						 System.out.println("Ship collided with asteroid and took damage!");
+					}
+				}
+			}
+			
 		}
 
-		if (shooting) {
-			beams.add(new Beam (new Point (position.x, position.y), rotation));
-			shooting = false;
-		}
-
-		beams.removeIf(beam -> !beam.isOnScreen());
-		for(Beam beam : beams){
-			beam.move();
-		}
+		// sample code for printing message for debugging
+		// counter is incremented and this message printed
+		// each time the canvas is repainted
+		counter++;
+		brush.setColor(Color.white);
+		brush.drawString("Counter is " + counter, 10, 10);
 
 	}
 
-	@Override
-	public void keyPressed(KeyEvent e) {
-		int key = e.getKeyCode();
-
-		if (key == KeyEvent.VK_UP) {
-			forward = true;
-		}
-
-		if (key == KeyEvent.VK_LEFT) {
-			left = true;
-		}
-
-		if (key == KeyEvent.VK_RIGHT) {
-			right = true;
-		}
-
-		if (key == KeyEvent.VK_DOWN) {
-			backward = true;
-		}
-
-		if (key == KeyEvent.VK_SPACE){
-			shooting = true;
-		}
-
+	public static void main(String[] args) {
+		AsteroidDestroyer a = new AsteroidDestroyer();
+		a.repaint();
 	}
-
-	@Override
-	public void keyReleased(KeyEvent e) {
-		int key = e.getKeyCode();
-
-		if (key == KeyEvent.VK_UP) {
-			forward = false;
-		}
-
-		if (key == KeyEvent.VK_LEFT) {
-			left = false;
-		}
-
-		if (key == KeyEvent.VK_RIGHT) {
-			right = false;
-		}
-
-		if (key == KeyEvent.VK_DOWN) {
-			backward = false;
-		}
-	}
-
-	public ArrayList<Beam> getBeams() {
-		return this.beams;
-	}
-
 }
