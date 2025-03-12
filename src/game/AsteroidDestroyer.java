@@ -82,7 +82,7 @@ class AsteroidDestroyer extends Game {
 		
 		if (element != null) {
 			element.move();
-			elementa.paint(brush);
+			element.paint(brush);
 
 			for (PowerUp pw : power) {
 				if(pw!= null) {
