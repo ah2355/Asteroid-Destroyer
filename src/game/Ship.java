@@ -10,6 +10,7 @@ public class Ship extends Element implements Move {
 	private boolean right = false;
 	private boolean backward = false;
 	private boolean shield = false;
+	private boolean shooting = false;
 	private PowerUp power;
 	private ArrayList<Beam> beams;
 	
