@@ -11,9 +11,12 @@ public class Ship extends Element implements Move {
 	private boolean backward = false;
 	private boolean shield = false;
 	private PowerUp power;
+	private boolean shooting;
+	private ArrayList<Beam> beams;
 
 	public Ship(Point[] inShape, Point inPosition, double inRotation) {
 		super(inShape, inPosition, inRotation);
+		beams = new ArrayList<>();
 	}
 
 	public void paint(Graphics brush) {
@@ -30,6 +33,10 @@ public class Ship extends Element implements Move {
 		if(!power.powerE.isActive()) {
 			deactiveShield();
 			power = null;
+		}
+
+		for(Beam beam : beams){
+			beam.paint(brush);
 		}
 	}
 	
@@ -83,6 +90,16 @@ public class Ship extends Element implements Move {
 			}
 		}
 
+		if (shooting) {
+			beams.add(new Beam (new Point (position.x, position.y), rotation));
+			shooting = false;
+		}
+
+		beams.removeIf(beam -> !beam.isOnScreen());
+		for(Beam beam : beams){
+			beam.move();
+		}
+
 	}
 
 	@Override
@@ -103,6 +120,10 @@ public class Ship extends Element implements Move {
 
 		if (key == KeyEvent.VK_DOWN) {
 			backward = true;
+		}
+
+		if (key == KeyEvent.VK_SPACE){
+			shooting = true;
 		}
 
 	}
