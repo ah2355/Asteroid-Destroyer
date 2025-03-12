@@ -149,4 +149,8 @@ public class Ship extends Element implements Move {
 		}
 	}
 
+	public ArrayList<Beam> getBeams() {
+		return this.beams;
+	}
+
 }
