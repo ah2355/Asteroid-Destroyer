@@ -14,7 +14,7 @@ public class Ship extends Element implements Move {
 	private PowerUp power;
 	private ArrayList<Beam> beams;
 	private boolean shooting;
-	
+
 	public Ship(Point[] inShape, Point inPosition, double inRotation) {
 		super(inShape, inPosition, inRotation);
 		beams = new ArrayList<>();
@@ -27,45 +27,42 @@ public class Ship extends Element implements Move {
 			brush.setColor(Color.RED);
 		}
 		super.paint(brush);
-		
-		if(power != null) {
-			power.powerE.check();
-			if(!power.powerE.isActive()) {
-				deactiveShield();
-				brush.setColor(Color.RED);
-				power = null;
-			}
+
+		if (power != null && !power.powerE.isActive()) {
+			deactiveShield();
+			brush.setColor(Color.RED);
+			power = null;
 		}
 
-		for(Beam beam : beams){
+		for (Beam beam : beams) {
 			beam.paint(brush);
 		}
 	}
-	
+
 	@Override
 	public boolean collide(Polygon p) {
-		if(this.statShield() && p instanceof PowerUp) {
+		if (this.statShield() && p instanceof PowerUp) {
 			return false;
 		}
-		
+
 		for (Point ps : this.getPoints()) {
-	        if (p.contains(ps)) {
-	            return true; 
-	        }
-	    }
-		
-		if(p instanceof PowerUp) {
+			if (p.contains(ps)) {
+				return true;
+			}
+		}
+
+		if (p instanceof PowerUp) {
 			PowerUp powerUp = (PowerUp) p;
-	        double dx = this.position.x - powerUp.position.x;
-	        double dy = this.position.y - powerUp.position.y;
-	        double distance = Math.sqrt(dx * dx + dy * dy);
-	        if (distance < 20) { 
-	            return true;
-	        }
+			double dx = this.position.x - powerUp.position.x;
+			double dy = this.position.y - powerUp.position.y;
+			double distance = Math.sqrt(dx * dx + dy * dy);
+			if (distance < 20) {
+				return true;
+			}
 		}
 		return false;
 	}
-	
+
 	public void collectPower(PowerUp pw) {
 		power = pw;
 		pw.activateShield(this);
@@ -84,7 +81,7 @@ public class Ship extends Element implements Move {
 		}
 		System.out.println("Shield deactivated!");
 	}
-	
+
 	public boolean statShield() {
 		return shield;
 	}
@@ -122,13 +119,13 @@ public class Ship extends Element implements Move {
 			}
 		}
 
-		if (shooting){
-			beams.add(new Beam (new Point (position.x, position.y), rotation));
+		if (shooting) {
+			beams.add(new Beam(new Point(position.x, position.y), rotation));
 			shooting = false;
 		}
 
 		beams.removeIf(beam -> !beam.isOnScreen());
-		for(Beam beam : beams){
+		for (Beam beam : beams) {
 			beam.move();
 		}
 	}
@@ -153,7 +150,7 @@ public class Ship extends Element implements Move {
 			backward = true;
 		}
 
-		if (key == KeyEvent.VK_SPACE){
+		if (key == KeyEvent.VK_SPACE) {
 			shooting = true;
 		}
 
@@ -179,10 +176,9 @@ public class Ship extends Element implements Move {
 			backward = false;
 		}
 	}
-	
-	public ArrayList<Beam> getBeams(){
+
+	public ArrayList<Beam> getBeams() {
 		return this.beams;
 	}
 
 }
-
