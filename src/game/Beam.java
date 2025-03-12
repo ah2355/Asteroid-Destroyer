@@ -22,19 +22,20 @@ public class Beam {
     position.y += speed * Math.sin(Math.toRadians(rotation));
 
     if (position.x < 0 || position.x > 800 || position.y < 0|| position.y > 600){
-      active = false;
+      active = false;}
     }
 
   public void paint(Graphics brush){
     if(active){
         brush.setColor(Color.YELLOW);
-        brush.fillRect((int) position.x, (int) position.y, 5, 5);
+        brush.fillRect((int) position.x, (int) position.y, 5, 5);}
       }
 
   public boolean isOnScreen(){
     return active;
   }
 
-  public point getPosition(){
+  public Point getPosition(){
     return position;
+  }
   }
