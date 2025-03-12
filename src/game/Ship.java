@@ -14,10 +14,12 @@ public class Ship extends Element implements Move {
 	private PowerUp power;
 	private ArrayList<Beam> beams;
 	private boolean shooting;
+	private Life lives;
 
 	public Ship(Point[] inShape, Point inPosition, double inRotation) {
 		super(inShape, inPosition, inRotation);
 		beams = new ArrayList<>();
+		lives = new Life(3);
 	}
 
 	public void paint(Graphics brush) {
@@ -38,17 +40,48 @@ public class Ship extends Element implements Move {
 			beam.paint(brush);
 		}
 	}
+	
+	public class Life{
+		private int lives;
+		private long lastTimeHit;
+		private final long coolDown = 1000;
+		
+		public Life(int l) {
+			lives = l;
+		}
+		
+		public void loseLife() {
+			long currentTime = System.currentTimeMillis();
+			
+			if(lives > 0) {
+				if (currentTime - lastTimeHit > coolDown) {
+		            lives--;
+		            lastTimeHit = currentTime;
+		        }
+			}
+		}
+		
+		public int getLife() {
+			return lives;
+		}
+		
+		public boolean isAlive() {
+			if(lives > 0) {
+				return true;
+			}
+			
+			return false;
+		}
+	}
+	
+	public Life getLifeAll() {
+		return lives;
+	}
 
 	@Override
 	public boolean collide(Polygon p) {
 		if (this.statShield() && p instanceof PowerUp) {
 			return false;
-		}
-
-		for (Point ps : this.getPoints()) {
-			if (p.contains(ps)) {
-				return true;
-			}
 		}
 
 		if (p instanceof PowerUp) {
@@ -59,7 +92,14 @@ public class Ship extends Element implements Move {
 			if (distance < 20) {
 				return true;
 			}
+		} else {
+			for (Point ps : this.getPoints()) {
+				if (p.contains(ps)) {
+					return true;
+				}
+			}
 		}
+		
 		return false;
 	}
 
@@ -88,46 +128,49 @@ public class Ship extends Element implements Move {
 
 	public void move() {
 		double stepSize = 2.0;
+		
+		if(lives.isAlive()) {
+			if (forward) {
+				double x = stepSize * Math.cos(Math.toRadians(rotation));
+				double y = stepSize * Math.sin(Math.toRadians(rotation));
 
-		if (forward) {
-			double x = stepSize * Math.cos(Math.toRadians(rotation));
-			double y = stepSize * Math.sin(Math.toRadians(rotation));
+				position.x += x;
+				position.y += y;
+			}
 
-			position.x += x;
-			position.y += y;
-		}
+			if (backward) {
+				double x = stepSize * Math.cos(Math.toRadians(rotation));
+				double y = stepSize * Math.sin(Math.toRadians(rotation));
 
-		if (backward) {
-			double x = stepSize * Math.cos(Math.toRadians(rotation));
-			double y = stepSize * Math.sin(Math.toRadians(rotation));
+				position.x -= x;
+				position.y -= y;
+			}
 
-			position.x -= x;
-			position.y -= y;
-		}
+			if (left) {
+				rotation -= 5;
+				if (rotation < 0) {
+					rotation += 360;
+				}
+			}
 
-		if (left) {
-			rotation -= 5;
-			if (rotation < 0) {
-				rotation += 360;
+			if (right) {
+				rotation += 5;
+				if (rotation >= 360) {
+					rotation -= 360;
+				}
+			}
+
+			if (shooting) {
+				beams.add(new Beam(new Point(position.x, position.y), rotation));
+				shooting = false;
+			}
+
+			beams.removeIf(beam -> !beam.isOnScreen());
+			for (Beam beam : beams) {
+				beam.move();
 			}
 		}
-
-		if (right) {
-			rotation += 5;
-			if (rotation >= 360) {
-				rotation -= 360;
-			}
-		}
-
-		if (shooting) {
-			beams.add(new Beam(new Point(position.x, position.y), rotation));
-			shooting = false;
-		}
-
-		beams.removeIf(beam -> !beam.isOnScreen());
-		for (Beam beam : beams) {
-			beam.move();
-		}
+		
 	}
 
 	@Override
