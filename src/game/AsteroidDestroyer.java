@@ -56,6 +56,8 @@ class AsteroidDestroyer extends Game {
 					System.out.println("System collides");
 				}
 			}
+			checkCollisions();
+
 			
 		}
 
@@ -69,10 +71,10 @@ class AsteroidDestroyer extends Game {
 	}
 
 	private void checkCollisions(){
-		ArrayList<Beam> beams = element.beams;
+		ArrayList<Beam> beams = element.getBeams();
 		beams.removeIf( beam -> {
 			for(Asteroid at : ast){
-				if(at.contains(beam.getPosition()){
+				if(at.contains(beam.getPosition())){
 					ast.remove(at);
 					return true;
 				}
