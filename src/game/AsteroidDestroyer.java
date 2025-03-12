@@ -75,6 +75,11 @@ class AsteroidDestroyer extends Game {
 		brush.setFont(font);
 		brush.setColor(Color.MAGENTA);
 		brush.drawString("Asteroid Destroyer", 250, 100);
+		
+		Font inst = new Font("San-serif", Font.BOLD, 10);
+		brush.setFont(inst);
+		brush.setColor(Color.white);
+		brush.drawString("Press \"space\" to shoot", 300, 120);
 
 		for(Star star: stars) {
 			star.paint(brush);
