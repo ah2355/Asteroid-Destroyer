@@ -10,6 +10,7 @@ NOTE: This class is the metaphorical "main method" of your program,
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
+import javax.swing.Timer;
 
 class AsteroidDestroyer extends Game {
 	static int counter = 0;
@@ -80,11 +81,11 @@ class AsteroidDestroyer extends Game {
 				at.paint(brush);
 
 				if (element.collide(at)) {
-					System.out.println("System collides");
+					System.out.println("Ship collided!");
 					if (element.statShield()) {
-						System.out.println("Shield blocked the collision with asteroid!");
+						System.out.println("Shield blocked the asteroid!");
 					} else {
-						System.out.println("Ship collided with asteroid and took damage!");
+						System.out.println("Ship collided with asteroid took damage!");
 					}
 				}
 			}
@@ -129,6 +130,10 @@ class AsteroidDestroyer extends Game {
 			double rotation = Math.random() * 360;
 
 			ast.add(new Asteroid(astr, new Point(x, y), rotation));
+		}
+		
+		if(power.length == 0) {
+			spawnPower();
 		}
 
 	}
