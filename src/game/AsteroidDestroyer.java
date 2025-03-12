@@ -71,23 +71,42 @@ class AsteroidDestroyer extends Game {
 		brush.setColor(Color.black);
 		brush.fillRect(0, 0, width, height);
 		
-		Font font = new Font("San-serif", Font.BOLD, 24);
+		Font font = new Font("San-serif", Font.BOLD, 30);
 		brush.setFont(font);
-		brush.setColor(Color.MAGENTA);
-		brush.drawString("Asteroid Destroyer", 250, 100);
+		brush.setColor(new Color(102, 0 ,153));
+		brush.drawString("Asteroid Destroyer", 250, 75);
+		
+		Font live = new Font("San-serif", Font.BOLD, 10);
+		brush.setFont(live);
+		brush.setColor(Color.WHITE);
+		brush.drawString("Lives: " + element.getLifeAll().getLife(), 10, 30);
 		
 		Font inst = new Font("San-serif", Font.BOLD, 10);
 		brush.setFont(inst);
 		brush.setColor(Color.white);
-		brush.drawString("Press \"space\" to shoot", 300, 120);
-
+		brush.drawString("Press \"space\" to shoot", 330, 95);
+		
 		for(Star star: stars) {
 			star.paint(brush);
 		}
 		
+		
 		if (element != null) {
 			element.move();
 			element.paint(brush);
+			
+			if(!element.getLifeAll().isAlive()) {
+				Font gg = new Font("San-serif", Font.BOLD, 40);
+				brush.setFont(gg);
+		        brush.setColor(Color.RED);
+		        brush.drawString("Game Over", 300, 300);
+		        
+		        Font count = new Font("San-serif", Font.BOLD, 10);
+				brush.setFont(count);
+				brush.setColor(Color.WHITE);
+				brush.drawString("Asteroid Hit: " + counter, 370, 330);
+		        return;
+			}
 
 			for (PowerUp pw : power) {
 				if(pw!= null) {
@@ -113,6 +132,7 @@ class AsteroidDestroyer extends Game {
 						System.out.println("Shield blocked the asteroid!");
 					} else {
 						System.out.println("Ship collided with asteroid took damage!");
+						element.getLifeAll().loseLife();
 					}
 				}
 			}
@@ -127,7 +147,6 @@ class AsteroidDestroyer extends Game {
 		Font counterFont = new Font("San-serif", Font.BOLD, 10);
 		brush.setFont(counterFont);
 		brush.setColor(Color.white);
-		counter++;
 		brush.drawString("Counter is " + counter, 10, 10);
 	}
 
@@ -136,7 +155,8 @@ class AsteroidDestroyer extends Game {
 		beams.removeIf(beam -> {
 			for (Asteroid at : ast) {
 				if (at.contains(beam.getPosition())) {
-					ast.remove(at);
+					ast.remove(at); 
+					counter++;
 					return true;
 				}
 			}
