@@ -5,7 +5,7 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-public class Element extends Polygon implements KeyListener{
+public class Element extends Polygon implements KeyListener, Move{
 	
 	private boolean forward = false;
 	private boolean left = false;
@@ -26,7 +26,6 @@ public class Element extends Polygon implements KeyListener{
 			yPoints[i] = (int) p[i].getY();
 		}
 		
-		brush.setColor(Color.RED);
 		brush.fillPolygon(xPoints, yPoints, p.length);
 	}
 	
@@ -53,6 +52,22 @@ public class Element extends Polygon implements KeyListener{
 			if(rotation >= 360) {
 				rotation -= 360;
 			}
+		}
+		
+		if(position.x < 0) {
+			position.x = 800;
+		}
+		
+		if(position.x > 800) {
+			position.x = 0;
+		}
+		
+		if(position.y < 0) {
+			position.y = 600;
+		}
+		
+		if(position.y > 600) {
+			position.y = 0;
 		}
 		
 	}
