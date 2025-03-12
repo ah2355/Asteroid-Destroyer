@@ -62,14 +62,16 @@ class AsteroidDestroyer extends Game {
 			element.paint(brush);
 
 			for (PowerUp pw : power) {
-				pw.paint(brush);
+				if(pw!= null) {
+					pw.paint(brush);
+				}	
 			}
 
-			for (PowerUp pw : power) {
-				if (element.collide(pw)) {
+			for(int i = 0; i < power.length; i++) {
+				if(power[i] != null && element.collide(power[i])) {
 					System.out.println("Power-up collected");
-					pw.activateShield(element);
-					element.collectPower(pw);
+					element.collectPower(power[i]);
+					power[i] = null;
 				}
 			}
 
