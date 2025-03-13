@@ -1,11 +1,9 @@
 package game;
 
 /*
-CLASS: YourGameNameoids
-DESCRIPTION: Extending Game, YourGameName is all in the paint method.
-NOTE: This class is the metaphorical "main method" of your program,
-      it is your control center.
-
+CLASS: AsteroidDestroyer 
+DESCRIPTION: The main game class that has control for the game logic, 
+and user input. It manages spaceship, asteroids, powerups, and background stuff.
 */
 import java.awt.*;
 import java.awt.event.*;
@@ -19,6 +17,10 @@ class AsteroidDestroyer extends Game {
 	private ArrayList<Star> stars;
 	private PowerUp[] power;
 
+	/**
+	 * Constructor initializes the game window and different elements of the
+	 * game like spaceship, background, and other elements
+	 */
 	public AsteroidDestroyer() {
 		super("AsteroidDestroyer!", 800, 600);
 		this.setFocusable(true);
@@ -40,6 +42,9 @@ class AsteroidDestroyer extends Game {
 		spawnStars();
 	}
 
+	/**
+	 * Spawns powerup at random locations
+	 */
 	public void spawnPower() {
 		for (int i = 0; i < power.length; i++) {
 			Point randomPosition = new Point((int) (Math.random() * 800),
@@ -48,6 +53,9 @@ class AsteroidDestroyer extends Game {
 		}
 	}
 	
+	/**
+	 * Spawns asteroids at random locations
+	 */
 	public void spawAsteroids() {
 		Point[] astr = { new Point(0, 0), new Point(20, -10),
 				new Point(40, 0), new Point(30, 20), new Point(10, 20) };
@@ -61,12 +69,19 @@ class AsteroidDestroyer extends Game {
 		}
 	}
 	
+	/**
+	 * Spawns stars at random locations (for background)
+	 */
 	public void spawnStars() {
 		for(int i =0 ; i < 100; i++) {
 			stars.add(new Star(800, 600));
 		}
 	}
 
+	/**
+	 * Paint method helps the game to put in the window
+	 * @param brush the graphics content used for drawing
+	 */
 	public void paint(Graphics brush) {
 		brush.setColor(Color.black);
 		brush.fillRect(0, 0, width, height);
@@ -101,10 +116,10 @@ class AsteroidDestroyer extends Game {
 		        brush.setColor(Color.RED);
 		        brush.drawString("Game Over", 300, 300);
 		        
-		        Font count = new Font("San-serif", Font.BOLD, 10);
+		        Font count = new Font("San-serif", Font.BOLD, 15);
 				brush.setFont(count);
 				brush.setColor(Color.WHITE);
-				brush.drawString("Asteroid Hit: " + counter, 370, 330);
+				brush.drawString("Asteroid Hit: " + counter, 355, 330);
 		        return;
 			}
 
@@ -141,15 +156,16 @@ class AsteroidDestroyer extends Game {
 
 		}
 
-		// sample code for printing message for debugging
-		// counter is incremented and this message printed
-		// each time the canvas is repainted
 		Font counterFont = new Font("San-serif", Font.BOLD, 10);
 		brush.setFont(counterFont);
 		brush.setColor(Color.white);
-		brush.drawString("Counter is " + counter, 10, 10);
+		brush.drawString("Hit: " + counter, 10, 10);
 	}
 
+	/**
+	 * Check for collisions between beams and asteroids removing them 
+	 * when the beam hits asteroid
+	 */
 	private void checkCollisions() {
 		ArrayList<Beam> beams = element.getBeams();
 		beams.removeIf(beam -> {
@@ -164,11 +180,14 @@ class AsteroidDestroyer extends Game {
 		});
 
 		if (ast.size() == 0) {
-			addMore();
+			addMoreAst();
 		}
 	}
 
-	private void addMore() {
+	/**
+	 * Add more Asteroids when they are all destroyed
+	 */
+	private void addMoreAst() {
 		Point[] astr = { new Point(0, 0), new Point(20, -10), 
 				new Point(40, 0), new Point(30, 20), new Point(10, 20) };
 
@@ -186,6 +205,10 @@ class AsteroidDestroyer extends Game {
 
 	}
 
+	/**
+	 * Main method to start the game
+	 * @param args
+	 */
 	public static void main(String[] args) {
 		AsteroidDestroyer a = new AsteroidDestroyer();
 		a.repaint();
