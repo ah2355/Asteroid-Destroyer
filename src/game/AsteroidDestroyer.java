@@ -47,8 +47,9 @@ class AsteroidDestroyer extends Game {
 	 */
 	public void spawnPower() {
 		for (int i = 0; i < power.length; i++) {
-			Point randomPosition = new Point((int) (Math.random() * 800),
-					(int) (Math.random() * 600));
+			Point randomPosition = new Point(20 + (int) 
+					(Math.random() * (800 - 2 * 20)),
+					20 +(int) (Math.random() * (600 - 2 * 20)));
 			power[i] = new PowerUp(randomPosition);
 		}
 	}
@@ -142,7 +143,6 @@ class AsteroidDestroyer extends Game {
 				at.paint(brush);
 
 				if (element.collide(at)) {
-					System.out.println("Ship collided!");
 					if (element.statShield()) {
 						System.out.println("Shield blocked the asteroid!");
 					} else {
